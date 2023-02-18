@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Current Coordinate</title>
+</head>
+
+<body>
+    <h1>UAV Location</h1>
+    <p>Starting latitude: <%= currentPoint.lat %>
+    </p>
+    <p>Starting longitude: <%= currentPoint.lng %></p>
+            
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+                const socket = io();
+                socket.on("updateCurrentPoint", point => {
+                    document.querySelector("h1").innerHTML = `Current Coordinate:<br>Latitude: ${point.lat}<br>Longitude: ${point.lng}`;
+                });
+            </script>
+</body>
+
+</html>
