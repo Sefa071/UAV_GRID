@@ -2,23 +2,60 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Current Coordinate</title>
+    <title>UAV Location</title>
 </head>
 
 <body>
-    <h1>UAV Location</h1>
-    <p>Starting latitude: <%= currentPoint.lat %>
-    </p>
-    <p>Starting longitude: <%= currentPoint.lng %></p>
-            
-            <script src="/socket.io/socket.io.js"></script>
-            <script>
-                const socket = io();
-                socket.on("updateCurrentPoint", point => {
-                    document.querySelector("h1").innerHTML = `Current Coordinate:<br>Latitude: ${point.lat}<br>Longitude: ${point.lng}`;
-                });
-            </script>
+    <table>
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(let i=0; i<teams.length; i++){ %>
+                <% const team=teams[i]; %>
+                    <tr>
+                        <td>
+                            <%= team[0].name %>
+                        </td>
+                        <td id="<%= team[0].name %>Lat">
+                            <%= team[0].lat %>
+                        </td>
+                        <td id="<%= team[0].name %>Lng">
+                            <%= team[0].lng %>
+                        </td>
+                    </tr>
+                    <% } %>
+        </tbody>
+    </table>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("connect", () => {
+            console.log("Connected to server");
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server");
+        });
+
+        socket.on("updateCurrentPoints", (data) => {
+            const { team, point } = data;
+            const latElement = document.querySelector(`#${team}Lat`);
+            const lngElement = document.querySelector(`#${team}Lng`);
+            latElement.innerHTML = point.lat;
+            lngElement.innerHTML = point.lng;
+        });
+
+        setInterval(() => {
+            console.log("Requesting update from server");
+            socket.emit("requestUpdate");
+        }, 2000);
+    </script>
 </body>
 
 </html>
