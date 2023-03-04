@@ -12,6 +12,7 @@
                 <th>Team Name</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
+                <th>Altitude</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +28,10 @@
                         <td id="<%= team[0].name %>Lng">
                             <%= team[0].lng %>
                         </td>
+                        <td id="<%= team[0].name %>Alt">
+                            <%= team[0].alt %>
+                        </td>
+                    
                     </tr>
                     <% } %>
         </tbody>
@@ -44,11 +49,13 @@
         });
 
         socket.on("updateCurrentPoints", (data) => {
-            const { team, point } = data;
+            const { team, point, alt } = data;
             const latElement = document.querySelector(`#${team}Lat`);
             const lngElement = document.querySelector(`#${team}Lng`);
+            const altElement = document.querySelector(`#${team}Alt`);
             latElement.innerHTML = point.lat;
             lngElement.innerHTML = point.lng;
+            altElement.innerHTML = alt;
         });
 
         setInterval(() => {
